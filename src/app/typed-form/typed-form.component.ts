@@ -1,28 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, UntypedFormArray, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, AbstractControl } from '@angular/forms';
 
-export type Recipe = {
+export type Meal = {
   name: string;
   category: Category
   price: number;
   persons: number;
-  ingredients: Ingredient[];
 }
 
-export type Ingredient = {
-  name: string;
-  amount: number;
-  ref: IngredientRef
-}
-
-export enum IngredientRef {
-  GRAM = 'gram',
-  PIECES = 'pieces',
-  LITRES = 'litres'
+export type MealForm = {
+  name: FormControl<string>;
+  category: FormControl<Category>
+  price: FormControl<number | null>;
+  persons: FormControl<number>;
 }
 
 export enum Category {
-  DESSERT = "Dessert",
   BREAKFAST = "Breakfast",
   DINNER = "Dinner",
   LUNCH = "Lunch"
@@ -32,69 +25,29 @@ export enum Category {
   selector: 'app-typed-form',
   templateUrl: './typed-form.component.html'
 })
-export class TypedFormComponent {
-  // https://blog.angular-university.io/angular-typed-forms/
-  // Form niet on init-> zorkgt voor FormGroup<any>
-  // form = this.fb.group({
-  //   name: 'Pannekoeken',
-  //   price: '5',
-  //   persons: '3',
-  // });
+export class TypedFormComponent implements OnInit {
+  public form = new FormGroup<MealForm>({
+    name: new FormControl('Pannekoeken', { nonNullable: true }),
+    category: new FormControl(Category.LUNCH, { nonNullable: true }),
+    price: new FormControl(5),
+    persons: new FormControl(5, { nonNullable: true }),
+  });
 
-
-  public form: any;
-  public pricePerPerson: number | undefined;
-  private ingredients: Ingredient[] = [
-    { name: 'Bloem', amount: 250, ref: IngredientRef.GRAM },
-    { name: 'Eieren', amount: 3, ref: IngredientRef.PIECES },
-    { name: 'Melk', amount: 5, ref: IngredientRef.LITRES },
-  ]
+  public pricePerPerson: number | undefined | bigint;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.form = new UntypedFormGroup({
-      name: new UntypedFormControl('Pannekoeken'),
-      category: new UntypedFormControl(Category.LUNCH),
-      price: new UntypedFormControl(5),
-      persons: new UntypedFormControl('Tante Gerda en Nonkel Harry'),
-      ingredients: new UntypedFormArray([])
-    });
-
-    this.addIngredients();
+    // console.log('FORM', this.form.value);
   }
-
-  addIngredients() {
-    this.ingredients.forEach(ingredient => {
-      this.form.get('ingredients').push(
-        new UntypedFormGroup({
-          name: new UntypedFormControl(ingredient.name),
-          amount: new UntypedFormControl(ingredient.amount)
-        })
-      );
-    });
-  }
-
 
   calculate() {
-    this.pricePerPerson = this.form.get('price')!.value / this.form.get('persons')!.value
+    if (this.form.controls.price.value && this.form.controls.persons.value) {
+      this.pricePerPerson = this.form.controls.price.value / this.form.controls.persons.value;
+
+      // Runtime error:
+      this.pricePerPerson = BigInt(Math.round(this.form.controls.price.value / this.form.controls.persons.value));
+    }
   }
 
-  // Show auto completion and typeSafety
-
-  // Throws error since types arent matching
-  //  this.form.controls.studio.setValue({
-  //   country: Country.BELGIUM
-  //  })
-
-  // Nullable fields todo
 }
-
-
-// // DEMO POINTS:
-// // typed forms
-// // error msgs
-
-// /*
-// https://blog.angular.io/angular-v15-is-now-available-df7be7f2f4c8
-// */

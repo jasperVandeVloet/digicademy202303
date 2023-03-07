@@ -22,7 +22,8 @@
   </div>
 
 
-  <button class="btn btn-primary" (click)="calculate()" >Calculate price per person</button>
+  <button class="btn btn-primary" (click)="calculate()">Calculate price per person</button>
+  <button class="btn btn-primary m-start-4" (click)="form.reset()">Reset</button>
 </form>
 
 
@@ -34,7 +35,5 @@
 <p>Persons: {{ form.get('persons')?.value }}</p>
 <p>Price/person: {{ pricePerPerson }}</p>
 
-<p>Ingredients:</p>
-<ul>
-  <li *ngFor="let ingredient of form.get('ingredients')?.value">{{ ingredient | json }}</li>
-</ul>
+<p>Form json:</p>
+<p>{{form.value | json }}</p>
