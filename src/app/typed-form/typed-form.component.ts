@@ -6,6 +6,7 @@ export type Meal = {
   category: Category
   price: number;
   persons: number;
+  // location: Restaurant
 }
 
 export type MealForm = {
@@ -13,6 +14,7 @@ export type MealForm = {
   category: FormControl<Category>
   price: FormControl<number | null>;
   persons: FormControl<number>;
+  // location: FormGroup<RestaurantForm>
 }
 
 export enum Category {
@@ -20,6 +22,18 @@ export enum Category {
   DINNER = "Dinner",
   LUNCH = "Lunch"
 }
+
+export type Restaurant = {
+  name: string,
+  adress: string,
+  openSince: number
+}
+
+// export type RestaurantForm = {
+//   name: FormControl<string | null>
+//   address: FormControl<string | null>
+//   openSince: FormControl<number | null>
+// }
 
 @Component({
   selector: 'app-typed-form',
@@ -29,8 +43,13 @@ export class TypedFormComponent implements OnInit {
   public form = new FormGroup<MealForm>({
     name: new FormControl('Pannekoeken', { nonNullable: true }),
     category: new FormControl(Category.LUNCH, { nonNullable: true }),
-    price: new FormControl(5),
+    price: new FormControl(12),
     persons: new FormControl(5, { nonNullable: true }),
+    // location: new FormGroup<RestaurantForm>({
+    //   name: new FormControl('pannenkoekenboot'),
+    //   address: new FormControl('Dessel'),
+    //   openSince: new FormControl(2000)
+    // })
   });
 
   public pricePerPerson: number | undefined | bigint;
@@ -38,7 +57,7 @@ export class TypedFormComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    // console.log('FORM', this.form.value);
+    console.log('FORM', this.form.value);
   }
 
   calculate() {
