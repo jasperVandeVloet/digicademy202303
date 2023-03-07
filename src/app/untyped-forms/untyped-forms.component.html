@@ -1,4 +1,4 @@
-<h1>Typed Recipe for happy developers 🍕</h1>
+<h1>Untyped Recipe for disaster ☠️</h1>
 
 <form [formGroup]="form">
   <div class="form-group mb-4">
@@ -36,5 +36,6 @@
 
 <p>Ingredients:</p>
 <ul>
-  <li *ngFor="let ingredient of form.get('ingredients')?.value">{{ ingredient | json }}</li>
+  <li *ngFor="let ingredient of form.get('ingredients').value">{{ ingredient | json }}</li>
 </ul>
+

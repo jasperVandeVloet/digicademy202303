@@ -15,12 +15,6 @@ export type Ingredient = {
   ref: IngredientRef
 }
 
-export enum IngredientRef {
-  GRAM = 'gram',
-  PIECES = 'pieces',
-  LITRES = 'litres'
-}
-
 export enum Category {
   DESSERT = "Dessert",
   BREAKFAST = "Breakfast",
@@ -28,23 +22,22 @@ export enum Category {
   LUNCH = "Lunch"
 }
 
+export enum IngredientRef{
+  GRAM = 'gram',
+  PIECES = 'pieces',
+  LITRES = 'litres'
+}
+
 @Component({
-  selector: 'app-typed-form',
-  templateUrl: './typed-form.component.html'
+  selector: 'app-untyped-forms',
+  templateUrl: './untyped-forms.component.html'
 })
-export class TypedFormComponent {
-  // https://blog.angular-university.io/angular-typed-forms/
-  // Form niet on init-> zorkgt voor FormGroup<any>
-  // form = this.fb.group({
-  //   name: 'Pannekoeken',
-  //   price: '5',
-  //   persons: '3',
-  // });
-
-
+export class UntypedFormsComponent implements OnInit {
   public form: any;
-  public pricePerPerson: number | undefined;
-  private ingredients: Ingredient[] = [
+
+  pricePerPerson: any;
+
+  ingredients: Ingredient[] = [
     { name: 'Bloem', amount: 250, ref: IngredientRef.GRAM },
     { name: 'Eieren', amount: 3, ref: IngredientRef.PIECES },
     { name: 'Melk', amount: 5, ref: IngredientRef.LITRES },
@@ -59,7 +52,7 @@ export class TypedFormComponent {
       price: new UntypedFormControl(5),
       persons: new UntypedFormControl('Tante Gerda en Nonkel Harry'),
       ingredients: new UntypedFormArray([])
-    });
+    })
 
     this.addIngredients();
   }
@@ -71,30 +64,14 @@ export class TypedFormComponent {
           name: new UntypedFormControl(ingredient.name),
           amount: new UntypedFormControl(ingredient.amount)
         })
-      );
+        );
     });
   }
 
-
   calculate() {
-    this.pricePerPerson = this.form.get('price')!.value / this.form.get('persons')!.value
+    this.pricePerPerson = this.form.get('price').value / this.form.get('persons').value;
+
+    // Runtime error:
+    // this.pricePerPerson = BigInt(Math.round((Number(this.form.get('price').value) / Number(this.form.get('persons').value))));
   }
-
-  // Show auto completion and typeSafety
-
-  // Throws error since types arent matching
-  //  this.form.controls.studio.setValue({
-  //   country: Country.BELGIUM
-  //  })
-
-  // Nullable fields todo
 }
-
-
-// // DEMO POINTS:
-// // typed forms
-// // error msgs
-
-// /*
-// https://blog.angular.io/angular-v15-is-now-available-df7be7f2f4c8
-// */
