@@ -8,6 +8,7 @@
       "request": "launch",
       "reAttach": true,
       "preLaunchTask": "npm: start",
+      "postDebugTask": "postdebugKill",
       "url": "http://localhost:4200/"
     },
     {
